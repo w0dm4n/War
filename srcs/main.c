@@ -6,7 +6,7 @@
 /*   By: frmarinh <frmarinh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/01 18:05:22 by frmarinh          #+#    #+#             */
-/*   Updated: 2017/07/01 18:07:34 by frmarinh         ###   ########.fr       */
+/*   Updated: 2018/04/16 19:44:18 by frmarinh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,6 @@ int					main(int argc, char **argv)
 {
 	setlocale(LC_CTYPE, "");
 	signal(SIGSEGV, signal_handler);
+	start_debug_console();
 	return (0);
 }
