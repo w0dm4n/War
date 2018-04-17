@@ -24,7 +24,7 @@ FLAGS = -mwindows -ggdb
 all: $(NAME)
 
 $(NAME):
-	@gcc $(SRCS) $(FLAGS) -I includes/ -o $(NAME)
+	@gcc $(SRCS) $(FLAGS) -I includes/ -o $(NAME) 
 
 clean:
 	@del $(NAME).exe

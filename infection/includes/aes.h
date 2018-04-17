@@ -9,7 +9,6 @@
 #include <openssl/aes.h>
 #include <dlfcn.h>
 #include <fcntl.h>
-#include <sys/wait.h>
 
 # define BOOLEAN int
 

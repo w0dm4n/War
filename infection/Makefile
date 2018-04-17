@@ -34,14 +34,18 @@ SRCS			=	srcs/utils/ft_strnew.c										\
 
 O_FILE = $(SRCS:.c=.o)
 
-FLAGS = -mwindows -ggdb -lcrypto -std=gnu99
+FLAGS = -mwindows -ggdb -std=gnu99
+
+INCLUDES = -I includes/ -I C:/OpenSSL-Win64/include -I C:/mingw/include
+
+LIBRARY = -L C:/OpenSSL-Win64/lib -lssl -lcrypto
 
 #FLAGS = -Wall -Wextra -Werror
 
 all: $(NAME)
 
 $(NAME):
-	@gcc $(SRCS) $(FLAGS) -I includes/ -o $(NAME)
+	@gcc $(SRCS) $(INCLUDES) -o $(NAME) $(LIBRARY)  $(FLAGS)
 
 clean:
 	@del $(NAME).exe

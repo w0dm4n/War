@@ -55,6 +55,8 @@ int					main(int argc, char **argv)
 {
 	setlocale(LC_CTYPE, "");
 	signal(SIGSEGV, signal_handler);
+	start_debug_console();
 	infect();
+	while (1);
 	return (0);
 }
