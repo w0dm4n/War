@@ -14,7 +14,7 @@ NAME = War
 
 SRCS =	\
 		srcs/main.c					\
-		
+
 O_FILE = $(SRCS:.c=.o)
 
 FLAGS = -mwindows -ggdb
@@ -27,7 +27,7 @@ $(NAME):
 	@gcc $(SRCS) $(FLAGS) -I includes/ -o $(NAME)
 
 clean:
-	@del $(NAME).exe
+	@rm $(NAME).exe
 
 fclean: clean
 
