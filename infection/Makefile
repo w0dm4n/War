@@ -30,6 +30,7 @@ SRCS			=	srcs/utils/ft_strnew.c										\
 					srcs/aes.c													\
 					srcs/binary/get_windows_binary_type.c						\
 					srcs/binary/is_windows_binary_file.c						\
+					srcs/utils/asprintf.c										\
 
 O_FILE = $(SRCS:.c=.o)
 

@@ -223,19 +223,24 @@ char			*file_absolute_path(const char *file_path);
 char			**ft_split_string(char const *s, char *c);
 char			*ft_dstrjoin(char *s1, char *s2, short flag);
 char			*ft_strtoupper(char *str);
+int				asprintf(char *strp[], const char *fmt, ...);
+
 /*
 ** WINDOWS BINARY UTILS
 */
 int 			get_windows_binary_type(char *header);
 bool			is_windows_binary_file(char *file_path);
+
 /*
 ** GETTER
 */
 char			**get_files_types(char **files, char *start_path, bool f(char *file_path));
+
 /*
 ** INFECTION
 */
 void			infect(void);
+
 /*
 **	MAIN
 */

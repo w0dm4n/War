@@ -11,8 +11,6 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 
-#ifndef DUREX_H
-
 # define BOOLEAN int
 
 typedef enum		e_bool
@@ -21,7 +19,6 @@ typedef enum		e_bool
 	false = 0
 }					t_bool;
 
-#endif
 /*
 **	CIPHER PLAIN
 */
