@@ -3,34 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jguyet <jguyet@student.42.fr>              +#+  +:+       +#+         #
+#    By: frmarinh <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2018/03/20 18:45:49 by jguyet            #+#    #+#              #
-#    Updated: 2018/03/20 18:45:51 by jguyet           ###   ########.fr        #
+#    Created: 2017/03/07 12:48:21 by frmarinh          #+#    #+#              #
+#    Updated: 2017/03/07 15:00:34 by frmarinh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-STUDENT			=	jguyet
+NAME = infection
 
-PROG1			=	infection.exe
-
-WHOAMI_CMD		=	$(shell whoami)
-
-NAMEBASE    	=   $(shell basename $(PROG1) .a)
-
-LENGTHNAME		=	`printf "%s" $(NAMEBASE) | wc -c`
-
-CC				=	gcc
-
-FLAGS			=	-mwindows -ggdb -lcrypto -std=gnu99
-
-SRCDIR			=
-
-OBJDIR			=	.objs/
-
-INCDIR			=	includes/
-
-SRCSPROG1		=	srcs/utils/ft_strnew.c										\
+SRCS			=	srcs/utils/ft_strnew.c										\
 					srcs/utils/file_exists.c									\
 					srcs/utils/is_directory.c									\
 					srcs/utils/file_get_contents.c								\
@@ -49,45 +31,20 @@ SRCSPROG1		=	srcs/utils/ft_strnew.c										\
 					srcs/binary/get_windows_binary_type.c						\
 					srcs/binary/is_windows_binary_file.c						\
 
-DSRCSPROG1		=	$(addprefix $(SRCDIR), $(SRCSPROG1))
+O_FILE = $(SRCS:.c=.o)
 
-OBJSPROG1		=	$(addprefix $(OBJDIR), $(DSRCSPROG1:.c=.o))
+FLAGS = -mwindows -ggdb -lcrypto -std=gnu99
 
-.SILENT:
+#FLAGS = -Wall -Wextra -Werror
 
-all:
-	if test -f $(PROG1) ; then																\
-		echo "make: Nothing to be done for \`all\`.";										\
-	else																					\
-		$(MAKE) -j $(STUDENT);																\
-	fi																						\
+all: $(NAME)
 
-$(STUDENT):
-	$(MAKE) $(PROG1)
-
-$(PROG1):	$(OBJDIR) $(OBJSPROG1)
-	$(CC) $(OBJSPROG1) $(FLAGS) -o $(PROG1)
-	echo "MAKE    [$(PROG1)]"
-
-$(OBJDIR):
-	mkdir -p $(OBJDIR)
-	mkdir -p $(dir $(OBJSPROG1))
-
-$(OBJDIR)%.o : $(SRCDIR)%.c | $(OBJDIR)
-	$(CC) $(FLAGS) -c $< -o $@ -I $(INCDIR)
-	printf "\033[38;5;092m%s\033[0m\033[K\n"	"[$(@)]"
+$(NAME):
+	@gcc $(SRCS) $(FLAGS) -I includes/ -o $(NAME)
 
 clean:
-	echo -en "\r\033[38;5;101mCLEAN  "														\
-		"[\033[0m$(NAMEBASE)\033[38;5;101m]\033[K\033[0m\n";									\
-	rm -rf $(OBJDIR)
+	@del $(NAME).exe
 
-fclean:
-	echo -en "\r\033[38;5;124mFCLEAN "														\
-		"[\033[0m$(NAMEBASE)\033[38;5;124m]\033[K\033[0m\n";									\
-	rm -rf $(PROG1)
-	rm -rf $(OBJDIR)
+fclean: clean
 
-re:			fclean all
-
-.PHONY: all clean fclean re
+re:		fclean all

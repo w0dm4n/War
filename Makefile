@@ -27,7 +27,7 @@ $(NAME):
 	@gcc $(SRCS) $(FLAGS) -I includes/ -o $(NAME)
 
 clean:
-	@rm $(NAME).exe
+	@del $(NAME).exe
 
 fclean: clean
 

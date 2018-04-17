@@ -12,9 +12,6 @@
 
 #include "infection.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-
 static char	*delimitor(char *s, char *c)
 {
 	int		i;
