@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <openssl/evp.h>
 #include <openssl/aes.h>
-#include <dlfcn.h>
+//#include <dlfcn.h>
 #include <fcntl.h>
 
 # define BOOLEAN int

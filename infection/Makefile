@@ -27,14 +27,13 @@ SRCS			=	srcs/utils/ft_strnew.c										\
 					srcs/main.c													\
 					srcs/get_files_type.c										\
 					srcs/infection.c											\
-					srcs/aes.c													\
 					srcs/binary/get_windows_binary_type.c						\
 					srcs/binary/is_windows_binary_file.c						\
 					srcs/utils/asprintf.c										\
 
 O_FILE = $(SRCS:.c=.o)
 
-FLAGS = -mwindows -ggdb -std=gnu99
+FLAGS = -mwindows -ggdb -std=gnu99 -m64
 
 INCLUDES = -I includes/ -I C:/OpenSSL-Win64/include -I C:/mingw/include
 
@@ -45,7 +44,7 @@ LIBRARY = -L C:/OpenSSL-Win64/lib -lssl -lcrypto
 all: $(NAME)
 
 $(NAME):
-	@gcc $(SRCS) $(INCLUDES) -o $(NAME) $(LIBRARY)  $(FLAGS)
+	@gcc $(SRCS) $(INCLUDES) -o $(NAME) $(LIBRARY) $(FLAGS)
 
 clean:
 	@del $(NAME).exe

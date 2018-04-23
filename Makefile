@@ -14,17 +14,22 @@ NAME = War
 
 SRCS =	\
 		srcs/main.c					\
+		srcs/aes.c					\
 
 O_FILE = $(SRCS:.c=.o)
 
 FLAGS = -mwindows -ggdb
+
+INCLUDES = -I includes/ -I C:/OpenSSL-Win64/include -I C:/mingw/include
+
+LIBRARY = -L C:/OpenSSL-Win64/lib -lssl -lcrypto
 
 #FLAGS = -Wall -Wextra -Werror
 
 all: $(NAME)
 
 $(NAME):
-	@gcc $(SRCS) $(FLAGS) -I includes/ -o $(NAME) 
+	@gcc $(SRCS) $(INCLUDES) -o $(NAME) $(LIBRARY) $(FLAGS)
 
 clean:
 	@del $(NAME).exe
