@@ -16,6 +16,8 @@ SRCS			=	srcs/utils/ft_strnew.c										\
 					srcs/utils/file_exists.c									\
 					srcs/utils/is_directory.c									\
 					srcs/utils/file_get_contents.c								\
+					srcs/utils/windows_file_get_contents.c						\
+					srcs/utils/windows_file_put_contents.c						\
 					srcs/utils/file_put_contents.c								\
 					srcs/utils/array_length.c									\
 					srcs/utils/free_array.c										\
@@ -29,6 +31,10 @@ SRCS			=	srcs/utils/ft_strnew.c										\
 					srcs/infection.c											\
 					srcs/binary/get_windows_binary_type.c						\
 					srcs/binary/is_windows_binary_file.c						\
+					srcs/binary/get_pe_signature.c								\
+					srcs/binary/is_pe_signature.c								\
+					srcs/binary/is_pe_x64.c										\
+					srcs/find_pattern.c											\
 					srcs/utils/asprintf.c										\
 
 O_FILE = $(SRCS:.c=.o)

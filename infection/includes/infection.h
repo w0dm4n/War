@@ -42,6 +42,8 @@
 # define MAX_WINDOWS_PATH	1024
 # define MAX_RECURSIVE_PATH	4096
 
+# define PATTERN			0x01, 0x03, 0x03, 0x07, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x55
+
 typedef __int32				int32_t;
 typedef unsigned __int32	uint32_t;
 
@@ -224,12 +226,19 @@ char			**ft_split_string(char const *s, char *c);
 char			*ft_dstrjoin(char *s1, char *s2, short flag);
 char			*ft_strtoupper(char *str);
 int				asprintf(char *strp[], const char *fmt, ...);
-
+char			*windows_file_get_contents(char *path);
+size_t 			windows_file_get_contents_size(char **content, char *path);
+bool			windows_file_put_contents(char *path, char *content);
+bool			windows_file_put_contents_size(char *path, char *content, int size);
+bool			windows_file_create_contents_size(char *path, char *content, int size);
 /*
 ** WINDOWS BINARY UTILS
 */
 int 			get_windows_binary_type(char *header);
 bool			is_windows_binary_file(char *file_path);
+char			*get_pe_signature(IMAGE_NT_HEADERS *hdr);
+bool			is_pe_signature(IMAGE_NT_HEADERS *hdr);
+bool			is_pe_x64(IMAGE_NT_HEADERS *pe);
 
 /*
 ** GETTER
@@ -239,7 +248,8 @@ char			**get_files_types(char **files, char *start_path, bool f(char *file_path)
 /*
 ** INFECTION
 */
-void			infect(void);
+int				find_pattern(char *file, int len);
+void			infect(char *argv);
 
 /*
 **	MAIN

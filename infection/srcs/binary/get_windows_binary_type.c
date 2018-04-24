@@ -35,9 +35,6 @@ int 	get_windows_binary_type(char *header)
 	if (strcmp(magic, DOS_MAGIC) == 0) {
 		result = IS_DOS_BINARY_TYPE;
 	}
-	if (strcmp(magic, PE_SIGNATURE) == 0) {
-		result = IS_PE_BINARY_TYPE;
-	}
 	free(magic);
 	return (result);
 }

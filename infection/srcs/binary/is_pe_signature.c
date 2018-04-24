@@ -1,33 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file_base_name.c                                   :+:      :+:    :+:   */
+/*   get_windows_binary_type.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jguyet <jguyet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/11 20:25:06 by jguyet            #+#    #+#             */
-/*   Updated: 2018/03/11 20:25:08 by jguyet           ###   ########.fr       */
+/*   Created: 2017/03/13 12:11:43 by jguyet            #+#    #+#             */
+/*   Updated: 2017/03/13 12:15:42 by jguyet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "infection.h"
 
-#include <string.h>
-
-char			*file_base_name(const char *file_path)
+/*
+**	is PE Signature from PE Header in hex
+*/
+bool				is_pe_signature(IMAGE_NT_HEADERS *hdr)
 {
-	char		**split;
-	char		*base_name;
-	size_t		split_size;
+	char	*value	= get_pe_signature(hdr);
 
-	split = ft_split_string(file_path, "\\");
-	split_size = array_length(split);
-	if (split_size <= 0)
+	if (value == NULL)
+		return (false);
+	if (strcmp(value, PE_SIGNATURE) == 0)
 	{
-		free_array(split);
-		return (ft_strnew(0));
+		free(value);
+		return (true);
 	}
-	base_name = strdup(split[split_size - 1]);
-	free_array(split);
-	return (base_name);
+	free(value);
+	return (false);
 }

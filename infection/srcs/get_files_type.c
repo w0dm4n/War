@@ -48,8 +48,8 @@ char			**get_files_types(char **files, char *start_path, bool f(char *file_path)
 	{
 		if (!strcmp(d->d_name, ".") || !strcmp(d->d_name, ".."))
 			continue ;
-		file_path = ft_dstrjoin(ft_dstrjoin(absolute_path, "/", 0), d->d_name, 1);
-		if (file_exists(file_path) == false)
+		file_path = ft_dstrjoin(ft_dstrjoin(absolute_path, "\\", 0), d->d_name, 1);
+		if (file_exists(file_path) == false && is_directory(file_path) == false)
 		{
 			free(file_path);
 			continue ;

@@ -1,33 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file_base_name.c                                   :+:      :+:    :+:   */
+/*   is_pe_x64.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jguyet <jguyet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/11 20:25:06 by jguyet            #+#    #+#             */
-/*   Updated: 2018/03/11 20:25:08 by jguyet           ###   ########.fr       */
+/*   Created: 2017/03/13 12:11:43 by jguyet            #+#    #+#             */
+/*   Updated: 2017/03/13 12:15:42 by jguyet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "infection.h"
 
-#include <string.h>
-
-char			*file_base_name(const char *file_path)
+/*
+**	Check if the PE file is a 64bits executable
+*/
+bool	is_pe_x64(IMAGE_NT_HEADERS *pe)
 {
-	char		**split;
-	char		*base_name;
-	size_t		split_size;
+	char	*value			= NULL;
 
-	split = ft_split_string(file_path, "\\");
-	split_size = array_length(split);
-	if (split_size <= 0)
+	if (!(value = ft_strnew(MAGIC_LENGTH * 2)))
+		return (false);
+	if (pe != NULL && pe->OptionalHeader.Magic != 0)
+		asprintf(&value, "%x", pe->OptionalHeader.Magic);
+	if (strcmp(value, ARCHITECTURE_64) == 0)
 	{
-		free_array(split);
-		return (ft_strnew(0));
+		free(value);
+		return (true);
 	}
-	base_name = strdup(split[split_size - 1]);
-	free_array(split);
-	return (base_name);
+	free(value);
+	return (false);
 }

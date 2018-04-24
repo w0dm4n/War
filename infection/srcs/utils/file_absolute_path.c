@@ -19,14 +19,14 @@ char			*file_absolute_path(const char *file_path)
 	size_t		i;
 	size_t		split_size;
 
-	split = ft_split_string(file_path, "/");
+	split = ft_split_string(file_path, "\\");
 	i = 0;
 	split_size = array_length(split);
 	absolute_path = ft_strnew(0);
 	while (i < (split_size - 1))
 	{
 		absolute_path = \
-			ft_dstrjoin(ft_dstrjoin(absolute_path, split[i], 1), "/", 1);
+			ft_dstrjoin(ft_dstrjoin(absolute_path, split[i], 1), "\\", 1);
 		i++;
 	}
 	free_array(split);
