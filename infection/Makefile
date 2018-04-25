@@ -34,6 +34,9 @@ SRCS			=	srcs/utils/ft_strnew.c										\
 					srcs/binary/get_pe_signature.c								\
 					srcs/binary/is_pe_signature.c								\
 					srcs/binary/is_pe_x64.c										\
+					srcs/binary/get_section.c									\
+					srcs/binary/OffsetToRVA.c									\
+					srcs/binary/RVAToOffset.c									\
 					srcs/find_pattern.c											\
 					srcs/utils/asprintf.c										\
 

