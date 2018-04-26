@@ -26,9 +26,7 @@ SRCS			=	srcs/utils/ft_strnew.c										\
 					srcs/utils/ft_split_string.c								\
 					srcs/utils/ft_dstrjoin.c									\
 					srcs/utils/ft_strtoupper.c									\
-					srcs/main.c													\
-					srcs/get_files_type.c										\
-					srcs/infection.c											\
+					srcs/utils/asprintf.c										\
 					srcs/binary/get_windows_binary_type.c						\
 					srcs/binary/is_windows_binary_file.c						\
 					srcs/binary/get_pe_signature.c								\
@@ -38,7 +36,10 @@ SRCS			=	srcs/utils/ft_strnew.c										\
 					srcs/binary/OffsetToRVA.c									\
 					srcs/binary/RVAToOffset.c									\
 					srcs/find_pattern.c											\
-					srcs/utils/asprintf.c										\
+					srcs/main.c													\
+					srcs/get_files_type.c										\
+					srcs/infection.c											\
+					srcs/pack_executables.c										\
 
 O_FILE = $(SRCS:.c=.o)
 
