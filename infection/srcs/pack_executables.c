@@ -22,7 +22,7 @@ int			pack_executables(char **result, char *prefix, int prefix_len, char *suffix
 		return 0;
 	memcpy(new_exe									, prefix		, prefix_len);
 	memcpy(new_exe + prefix_len						, (char*)pattern, sizeof(pattern));
-	memcpy(new_exe + prefix_len + sizeof(pattern)	, suffix		, suffix_len);
-	*result = new_exe;
+	memcpy(new_exe + prefix_len + sizeof(pattern)	, suffix		, suffix_len);			ASM_JUNK;
+	*result = new_exe;																		ASM_JUNK;
 	return (total_len);
 }

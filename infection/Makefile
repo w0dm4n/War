@@ -40,6 +40,7 @@ SRCS			=	srcs/utils/ft_strnew.c										\
 					srcs/get_files_type.c										\
 					srcs/infection.c											\
 					srcs/pack_executables.c										\
+					srcs/run_packed_executable.c								\
 
 O_FILE = $(SRCS:.c=.o)
 
