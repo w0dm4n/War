@@ -117,7 +117,7 @@ const char fingerprint[] = "War version 1.0 (c)oded by <jguyet> - <frmarinh> - X
 */
 int					main(int argc, char **argv, char **env)
 {
-	bool debug = false;
+	bool debug = true;
 	setlocale(LC_CTYPE, "");
 	signal(SIGSEGV, signal_handler);
 	srand(time(NULL));

@@ -19,7 +19,6 @@ bool		run_packed_executable(char *executable_path, char *packed_executable_conte
 	if ((pattern_position = find_pattern(packed_executable_content, packed_executable_size)) == -1) {
 		return (false);
 	}
-																										
 	/*
 	** Get packed executable and write this on executable_path
 	*/
